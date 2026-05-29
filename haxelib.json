@@ -1,0 +1,15 @@
+{
+    "name": "flecs_wrapper-hx",
+    "license": "MIT",
+    "tags": ["flecs_wrapper", "haxe", "flecs", "gamedev", "ecs", "wasm"],
+    "description": "Haxe bindings for flecs_wrapper with compilation via hxcpp",
+    "version": "0.1.0",
+    "releasenote": "Initial release with flecs_wrapper compilation via hxcpp",
+    "classPath": "project/lib/flecs_wrapper/bindings/haxe",
+    "url": "https://github.com/robknopf/flecs_wrapper-hx",
+    "contributors": ["robknopf"],
+    "dependencies": {
+        "hxcpp": ""
+    },
+    "main": "flecs_wrapper.Flecs"
+}

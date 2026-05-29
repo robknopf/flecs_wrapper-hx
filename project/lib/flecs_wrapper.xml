@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+    <files id="flecs_wrapper">
+        <compilerflag value="-I${FLECS_WRAPPER}" />
+        <compilerflag value="-Wno-unused-result" />
+        <compilerflag value="-Wno-implicit-const-int-float-conversion" />
+        <compilerflag value="-Wno-missing-braces" />
+
+        <!-- we exclude unused modules from flecs -->
+        <compilerflag value="-DFLECS_CUSTOM_BUILD" />
+
+        <!-- add only the modules we need -->
+        <!-- <compilerflag value="-DFLECS_CPP" /> -->
+        <compilerflag value="-DFLECS_MODULE" />
+        <compilerflag value="-DFLECS_OS_API_IMPL" />
+        <compilerflag value="-DFLECS_SYSTEM" />
+        <compilerflag value="-DFLECS_PIPELINE" />
+        <compilerflag value="-DFLECS_TIMER" />
+
+        <file name="${FLECS_WRAPPER}/flecs.c" />
+        <file name="${FLECS_WRAPPER}/flecs_wrapper.c" />
+        <file name="${FLECS_WRAPPER}/flecs_wrapper_component.c" />
+        <file name="${FLECS_WRAPPER}/flecs_wrapper_components.c" />
+        <file name="${FLECS_WRAPPER}/flecs_wrapper_entity.c" />
+        <file name="${FLECS_WRAPPER}/flecs_wrapper_event.c" />
+        <file name="${FLECS_WRAPPER}/flecs_wrapper_id.c" />
+        <file name="${FLECS_WRAPPER}/flecs_wrapper_pair.c" />
+        <file name="${FLECS_WRAPPER}/flecs_wrapper_system.c" />
+        <file name="${FLECS_WRAPPER}/flecs_wrapper_world.c" />
+        <file name="${FLECS_WRAPPER}/systems/destination_system_.c" />
+        <file name="${FLECS_WRAPPER}/systems/move_system_.c" />
+    </files>
+</xml>

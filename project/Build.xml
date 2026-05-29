@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+    <pragma once="true" />
+
+    <!-- Shorthand variables -->
+    <set name="FLECS_WRAPPER"   value="${haxelib:flecs-hx}/project/lib/flecs_wrapper" />
+
+    <!-- Include paths for hxcpp-generated C++ files -->
+    <files id="haxe">
+        <compilerflag value="-I${FLECS_WRAPPER}/include" />
+        <compilerflag value="-I${FLECS_WRAPPER}/src" />
+        <compilerflag value="-DPLATFORM_WEB" if="emscripten" />
+        <compilerflag value="-Wno-incompatible-function-pointer-types" />
+    </files>
+
+    <files id="__main__">
+        <compilerflag value="-I${FLECS_WRAPPER}/include" />
+    </files>
+
+    <!-- flecs_wrapper C sources -->
+    <files id="flecs_wrapper">
+        <compilerflag value="-I${FLECS_WRAPPER}/include" />
+        <compilerflag value="-I${FLECS_WRAPPER}/src" />
+        <compilerflag value="-Wno-incompatible-function-pointer-types" />
+    </files>
+
+    <!-- Dependency build configs -->
+    <include name="${haxelib:librl-hx}/project/lib/flecs_wrapper.xml" />
+
+    <!-- Emscripten compiler tweaks -->
+    <compiler id="emscripten" exe="emcc">
+        <cppflag value="-Wno-inconsistent-missing-override" />
+        <cppflag value="-Wno-overflow" />
+        <cppflag value="-Wno-nontrivial-memcall" />
+    </compiler>
+
+    <!-- hxcpp uses addTwice on Linux for archive ordering; allow the resulting duplicates -->
+    <linker id="exe" if="linux" unless="emscripten">
+        <flag value="-Wl,--allow-multiple-definition" />
+    </linker>
+
+    <!-- Desktop linking -->
+    <target id="haxe" unless="emscripten||static_link">
+        <files id="flecs_wrapper" />
+        <lib name="-lm" />
+    </target>
+
+    <!-- WASM linking -->
+    <target id="haxe" if="emscripten">
+        <files id="flecs_wrapper" />
+        <lib name="-lm" />
+    </target>
+
+    <!-- Emscripten linker -->
+    <linker id="exe" exe="emcc" replace="true" if="emscripten">
+        <flag value="-Wl,--allow-multiple-definition" />
+        <flag value="-s" />
+        <flag value="WASM=1" />
+        <flag value="-s" />
+        <flag value="USE_GLFW=3" />
+        <flag value="-s" />
+        <flag value="FETCH=1" />
+        <flag value="-s" />
+        <flag value="MIN_WEBGL_VERSION=2" />
+        <flag value="-s" />
+        <flag value="MAX_WEBGL_VERSION=2" />
+        <flag value="-s" />
+        <flag value="ALLOW_MEMORY_GROWTH=1" />
+        <flag value="-s" />
+        <flag value="INITIAL_MEMORY=67108864" />
+        <flag value="-lidbfs.js" />
+        <flag value="-s" />
+        <flag value="MODULARIZE=1" />
+        <flag value="-s" />
+        <flag value="EXPORT_ES6=1" />
+        <flag value="-s" />
+        <flag value="EXPORTED_RUNTIME_METHODS=['ccall','cwrap']" />
+
+        <!-- hxcpp GC requires spill-pointers -->
+        <flag value="--Wno-limited-postlink-optimizations" />
+        <flag value="-s" />
+        <flag value="BINARYEN_EXTRA_PASSES='--spill-pointers'" />
+
+        <!-- wasm exceptions for Haxe try/catch -->
+        <flag value="-fwasm-exceptions" />
+
+        <section unless="debug">
+            <flag value="-O3"/>
+        </section>
+        <section if="debug">
+            <flag value="-g"/>
+        </section>
+
+        <ext value="${HXCPP_LINK_EMSCRIPTEN_EXT}"/>
+        <outflag value="-o "/>
+    </linker>
+</xml>
