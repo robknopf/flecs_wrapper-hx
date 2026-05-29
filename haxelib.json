@@ -5,11 +5,12 @@
     "description": "Haxe bindings for flecs_wrapper with compilation via hxcpp",
     "version": "0.1.0",
     "releasenote": "Initial release with flecs_wrapper compilation via hxcpp",
-    "classPath": "project/lib/flecs_wrapper/bindings/haxe",
+    "classPath": "project/src",
     "url": "https://github.com/robknopf/flecs_wrapper-hx",
     "contributors": ["robknopf"],
     "dependencies": {
-        "hxcpp": ""
+        "hxcpp": "",
+        "utest": ""
     },
     "main": "flecs_wrapper.Flecs"
 }

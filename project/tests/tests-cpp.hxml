@@ -1,0 +1,8 @@
+-lib utest
+-cp project/src
+-cp project
+--main tests.RunTests
+--dce no
+-cpp out/tests-cpp
+-D HXCPP_NO_CLEAN
+--cmd ./out/tests-cpp/RunTests

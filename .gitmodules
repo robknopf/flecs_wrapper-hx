@@ -1,4 +1,3 @@
 [submodule "project/lib/flecs_wrapper"]
 	path = project/lib/flecs_wrapper
 	url = https://github.com/robknopf/flecs_wrapper.git
-

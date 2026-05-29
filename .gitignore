@@ -2,6 +2,7 @@
 bin/
 obj/
 build/
+out/
 
 # Haxe build artifacts
 *.d.ts

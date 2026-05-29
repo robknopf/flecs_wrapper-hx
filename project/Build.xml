@@ -3,7 +3,7 @@
     <pragma once="true" />
 
     <!-- Shorthand variables -->
-    <set name="FLECS_WRAPPER"   value="${haxelib:flecs-hx}/project/lib/flecs_wrapper" />
+    <set name="FLECS_WRAPPER"   value="${haxelib:flecs_wrapper-hx}/project/lib/flecs_wrapper" />
 
     <!-- Include paths for hxcpp-generated C++ files -->
     <files id="haxe">
@@ -24,9 +24,6 @@
         <compilerflag value="-Wno-incompatible-function-pointer-types" />
     </files>
 
-    <!-- Dependency build configs -->
-    <include name="${haxelib:librl-hx}/project/lib/flecs_wrapper.xml" />
-
     <!-- Emscripten compiler tweaks -->
     <compiler id="emscripten" exe="emcc">
         <cppflag value="-Wno-inconsistent-missing-override" />
@@ -42,12 +39,36 @@
     <!-- Desktop linking -->
     <target id="haxe" unless="emscripten||static_link">
         <files id="flecs_wrapper" />
+        <file name="${FLECS_WRAPPER}/src/flecs.c" />
+        <file name="${FLECS_WRAPPER}/src/flecs_wrapper.c" />
+        <file name="${FLECS_WRAPPER}/src/flecs_wrapper_component.c" />
+        <file name="${FLECS_WRAPPER}/src/flecs_wrapper_components.c" />
+        <file name="${FLECS_WRAPPER}/src/flecs_wrapper_entity.c" />
+        <file name="${FLECS_WRAPPER}/src/flecs_wrapper_event.c" />
+        <file name="${FLECS_WRAPPER}/src/flecs_wrapper_id.c" />
+        <file name="${FLECS_WRAPPER}/src/flecs_wrapper_pair.c" />
+        <file name="${FLECS_WRAPPER}/src/flecs_wrapper_system.c" />
+        <file name="${FLECS_WRAPPER}/src/flecs_wrapper_world.c" />
+        <file name="${FLECS_WRAPPER}/src/systems/destination_system.c" />
+        <file name="${FLECS_WRAPPER}/src/systems/move_system.c" />
         <lib name="-lm" />
     </target>
 
     <!-- WASM linking -->
     <target id="haxe" if="emscripten">
         <files id="flecs_wrapper" />
+        <file name="${FLECS_WRAPPER}/src/flecs.c" />
+        <file name="${FLECS_WRAPPER}/src/flecs_wrapper.c" />
+        <file name="${FLECS_WRAPPER}/src/flecs_wrapper_component.c" />
+        <file name="${FLECS_WRAPPER}/src/flecs_wrapper_components.c" />
+        <file name="${FLECS_WRAPPER}/src/flecs_wrapper_entity.c" />
+        <file name="${FLECS_WRAPPER}/src/flecs_wrapper_event.c" />
+        <file name="${FLECS_WRAPPER}/src/flecs_wrapper_id.c" />
+        <file name="${FLECS_WRAPPER}/src/flecs_wrapper_pair.c" />
+        <file name="${FLECS_WRAPPER}/src/flecs_wrapper_system.c" />
+        <file name="${FLECS_WRAPPER}/src/flecs_wrapper_world.c" />
+        <file name="${FLECS_WRAPPER}/src/systems/destination_system.c" />
+        <file name="${FLECS_WRAPPER}/src/systems/move_system.c" />
         <lib name="-lm" />
     </target>
 
