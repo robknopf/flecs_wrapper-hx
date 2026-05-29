@@ -6,22 +6,12 @@ import haxe.macro.Expr;
 import haxe.macro.Type;
 #end
 
-#if !macro
-import cpp.UInt32;
-import flecs_wrapper.FlecsWrapper;
-#end
-
 class Component {
   public var name:String;
-  #if !macro
-  public var id:cpp.UInt32;
-  public var size:cpp.UInt32;
-  #else
   public var id:Int;
   public var size:Int;
-  #end
 
-  public function new(name:String, id:#if !macro cpp.UInt32 #else Int #end, size:#if !macro cpp.UInt32 #else Int #end) {
+  public function new(name:String, id:Int, size:Int) {
     this.name = name;
     this.id = id;
     this.size = size;
@@ -66,12 +56,13 @@ class Component {
       flecs_wrapper.Component.create($v{nativeName}, cpp.Native.sizeof($typeExpr))
     );
   }
+
   #if !macro
   public inline function isTag():Bool {
     return FlecsWrapper.componentIsTag(id);
   }
 
-  public static inline function idByName(name:String):cpp.UInt32 {
+  public static inline function idByName(name:String):Int {
     return FlecsWrapper.componentId(name);
   }
 
@@ -107,5 +98,4 @@ class Component {
     return new Component(name, id, 0);
   }
   #end
-
 }

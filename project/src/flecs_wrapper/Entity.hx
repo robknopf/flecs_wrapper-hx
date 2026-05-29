@@ -1,16 +1,12 @@
 package flecs_wrapper;
 
-#if !macro
-import cpp.Pointer;
-import cpp.UInt32;
 import flecs_wrapper.FlecsWrapper;
 import flecs_wrapper.FlecsWrapper.ComponentId;
 import flecs_wrapper.FlecsWrapper.EntityId;
 import flecs_wrapper.FlecsWrapper.PairId;
-#end
+import flecs_wrapper.impl.EntityImpl;
 
 class Entity {
-#if !macro
   public var id:EntityId;
 
   public function new(id:EntityId) {
@@ -63,44 +59,24 @@ class Entity {
     return FlecsWrapper.entityHasComponent(id, cast comp);
   }
 
-  @:generic
-  public function setValue<T>(comp:Component, value:T):Bool {
-    var tmp:T = value;
-    var dataPtr:Pointer<cpp.Void> = untyped __cpp__("::cpp::Pointer<void>((void*)&{0})", tmp);
-    return FlecsWrapper.entitySetComponent(id, comp.id, dataPtr);
+  @:generic public inline function setValue<T>(comp:Component, value:T):Bool {
+    return EntityImpl.setValue(id, comp, value);
   }
 
-  @:generic
-  public function rawSet<T>(comp:Component, value:Pointer<T>):Bool {
-    return FlecsWrapper.entitySetComponent(id, comp.id, cast value);
+  @:generic public inline function rawSet<T>(comp:Component, value:NativePtr<T>):Bool {
+    return EntityImpl.rawSet(id, comp, value);
   }
 
-  @:generic
-  public function rawGet<T>(comp:Component):Pointer<T> {
-    return cast FlecsWrapper.entityGetComponent(id, comp.id);
+  @:generic public inline function rawGet<T>(comp:Component):NativePtr<T> {
+    return cast EntityImpl.rawGet(id, comp);
   }
 
-  @:generic
-  public function get<T>(comp:Component):T {
-    var ptr:Pointer<T> = cast FlecsWrapper.entityGetComponent(id, comp.id);
-    if (ptr == null) {
-      throw 'Component not found for entity ${id} and component ${comp.id}';
-    }
-    return ptr.ref;
+  @:generic public inline function get<T>(comp:Component):T {
+    return cast EntityImpl.get(id, comp);
   }
 
-  /**
-   * Optional component access without throwing.
-   *
-   * Flecs/C semantics are naturally pointer-like (`ecs_get` returns NULL).
-   * On cpp targets with `@:component` backing structs, returning `null` *values*
-   * for missing components is awkward for hxcpp compared to nullable pointers.
-   *
-   * Prefer `has(comp)` + `get<T>(comp)` if you want value semantics without pointers.
-   */
-  @:generic
-  public function tryGet<T>(comp:Component):NativePtr<T> {
-    return cast FlecsWrapper.entityGetComponent(id, comp.id);
+  @:generic public inline function tryGet<T>(comp:Component):NativePtr<T> {
+    return cast EntityImpl.tryGet(id, comp);
   }
 
   public function mark(comp:Dynamic):Void {
@@ -120,24 +96,7 @@ class Entity {
   }
 
   private function resolvePairId(relation:Dynamic, object:Dynamic):PairId {
-    if (Std.isOfType(relation, Component)) {
-      var relComp:Component = cast relation;
-      if (Std.isOfType(object, Entity)) {
-        return FlecsWrapper.pairRegister(relComp.id, cast(object, Entity).id);
-      }
-      return FlecsWrapper.pairRegister(relComp.id, cast object);
-    }
-    if (Std.isOfType(relation, Entity)) {
-      var relEnt:Entity = cast relation;
-      if (Std.isOfType(object, Entity)) {
-        return FlecsWrapper.pairRegisterEntity(relEnt.id, cast(object, Entity).id);
-      }
-      return FlecsWrapper.pairRegisterEntity(relEnt.id, cast object);
-    }
-    if (Std.isOfType(relation, String) && Std.isOfType(object, String)) {
-      return FlecsWrapper.pairRegisterByName(cast relation, cast object);
-    }
-    throw 'Unsupported pair relation/object types';
+    return EntityImpl.resolvePairId(relation, object);
   }
 
   public function addPair(relation:Dynamic, object:Dynamic):Bool {
@@ -155,30 +114,18 @@ class Entity {
     return FlecsWrapper.entityHasPair(id, pairId);
   }
 
-  public function rawSetPair(relation:Dynamic, object:Dynamic, value:Pointer<cpp.Void>):Bool {
-    var pairId = resolvePairId(relation, object);
-    return FlecsWrapper.entitySetPair(id, pairId, value);
+  public inline function rawSetPair(relation:Dynamic, object:Dynamic, value:NativePtr<Dynamic>):Bool {
+    return EntityImpl.rawSetPair(id, relation, object, value);
   }
 
-  public function rawGetPair(relation:Dynamic, object:Dynamic):Pointer<cpp.Void> {
-    var pairId = resolvePairId(relation, object);
-    return FlecsWrapper.entityGetPair(id, pairId);
+  public inline function rawGetPair(relation:Dynamic, object:Dynamic):NativePtr<Dynamic> {
+    return EntityImpl.rawGetPair(id, relation, object);
   }
 
-  @:generic
-  public function rawGetPairTyped<T>(relation:Dynamic, object:Dynamic):Pointer<T> {
-    return cast rawGetPair(relation, object);
+  @:generic public inline function rawGetPairTyped<T>(relation:Dynamic, object:Dynamic):NativePtr<T> {
+    return cast EntityImpl.rawGetPairTyped(id, relation, object);
   }
-#end
 
-  /**
-   * Upsert / set component data.
-   *
-   * - `{ field: value, ... }` object literals: expanded at compile time into direct
-   *   field writes on the Flecs-backed struct (requires `ComponentRef<T>` from
-   *   `Component.of(...)` so `T` is known).
-   * - `new MyComponent(...)`: copies bytes into Flecs storage (native upsert).
-   */
   @:overload(function(selfExpr:haxe.macro.Expr, compExpr:haxe.macro.Expr, valueExpr:haxe.macro.Expr):haxe.macro.Expr {})
   public macro function set(
     selfExpr:haxe.macro.Expr,

@@ -1,327 +1,170 @@
 package flecs_wrapper;
 
-#if !macro
-import cpp.Float32;
-import cpp.UInt32;
-import cpp.ConstCharStar;
-import cpp.RawPointer;
-import cpp.RawConstPointer;
-import cpp.Pointer;
-import cpp.ConstPointer;
-#end
-
-// Type alias for pointer-sized unsigned integer
-#if !macro
-  #if cpp_64
-  typedef UIntPtr = cpp.UInt64;
-  #else
-  typedef UIntPtr = cpp.UInt32;
-  #end
-#else
-typedef UIntPtr = Int;
-#end
-
-// Wrapper ID types (stable handles, not ecs_entity_t)
-#if !macro
-typedef EntityId = UInt32;
-#else
+// Stable wrapper handle types. These are public Haxe-facing aliases, not raw flecs ids.
 typedef EntityId = Int;
-#end
-#if !macro
-typedef ComponentId = UInt32;
-typedef EventId = UInt32;
-typedef ObserverId = UInt32;
-typedef SystemId = UInt32;
-typedef PairId = UInt32;
-#else
 typedef ComponentId = Int;
 typedef EventId = Int;
 typedef ObserverId = Int;
 typedef SystemId = Int;
 typedef PairId = Int;
-#end
 
-// Native callback signatures (match flecs_wrapper.h)
-#if !macro
-typedef SystemCallbackNative = cpp.Callable<
-  (
-    entityIds:RawConstPointer<EntityId>,
-    entityCount:UInt32,
-    columns:RawPointer<RawPointer<cpp.Void>>,
-    columnComponentIds:RawConstPointer<ComponentId>,
-    columnSizes:RawConstPointer<UInt32>,
-    columnCount:UInt32,
-    deltaTime:Float32,
-    callbackId:UInt32
-  ) -> Void
->;
-
-typedef ObserverCallbackNative = cpp.Callable<
-  (
-    entityIds:RawConstPointer<EntityId>,
-    entityCount:UInt32,
-    columns:RawPointer<RawPointer<cpp.Void>>,
-    columnComponentIds:RawConstPointer<ComponentId>,
-    columnSizes:RawConstPointer<UInt32>,
-    columnCount:UInt32,
-    eventId:EventId,
-    componentId:ComponentId,
-    callbackId:UInt32
-  ) -> Void
->;
-#end
-
-@:buildXml('
-<echo value="Compiling Flecs (wrapper)..." />
-<echo value="hxlib path: ${haxelib:flecs_wrapper-hx}" />
-<files id="haxe">
-  <compilerflag value="-I${haxelib:flecs_wrapper-hx}/project/lib/flecs_wrapper/include"/>
-  <file name="${haxelib:flecs_wrapper-hx}/project/lib/flecs_wrapper/src/flecs.c" />
-  <file name="${haxelib:flecs_wrapper-hx}/project/lib/flecs_wrapper/src/flecs_wrapper.c" />
-  <file name="${haxelib:flecs_wrapper-hx}/project/lib/flecs_wrapper/src/flecs_wrapper_component.c" />
-  <file name="${haxelib:flecs_wrapper-hx}/project/lib/flecs_wrapper/src/flecs_wrapper_components.c" />
-  <file name="${haxelib:flecs_wrapper-hx}/project/lib/flecs_wrapper/src/flecs_wrapper_id.c" />
-  <file name="${haxelib:flecs_wrapper-hx}/project/lib/flecs_wrapper/src/flecs_wrapper_pair.c" />
-  <file name="${haxelib:flecs_wrapper-hx}/project/lib/flecs_wrapper/src/flecs_wrapper_world.c" />
-  <file name="${haxelib:flecs_wrapper-hx}/project/lib/flecs_wrapper/src/flecs_wrapper_entity.c" />
-  <file name="${haxelib:flecs_wrapper-hx}/project/lib/flecs_wrapper/src/flecs_wrapper_event.c" />
-  <file name="${haxelib:flecs_wrapper-hx}/project/lib/flecs_wrapper/src/flecs_wrapper_system.c" />
-  <file name="${haxelib:flecs_wrapper-hx}/project/lib/flecs_wrapper/src/systems/destination_system.c" />
-  <file name="${haxelib:flecs_wrapper-hx}/project/lib/flecs_wrapper/src/systems/move_system.c" />
-</files>
-')
-@:headerInclude('flecs_wrapper.h')
 @:keep
 @:expose
 class FlecsWrapper {
-  // event types
-  public static final EcsUnknownEvent:UInt32 = 0;
-  public static final EcsOnAdd:UInt32 = 1;
-  public static final EcsOnRemove:UInt32 = 2;
-  public static final EcsOnSet:UInt32 = 3;
-  public static final EcsOnDelete:UInt32 = 4;
-  public static final EcsOnDeleteTarget:UInt32 = 5;
-  public static final EcsOnTableCreate:UInt32 = 6;
-  public static final EcsOnTableDelete:UInt32 = 7;
+  public static var EcsUnknownEvent(get, never):Int;
+  static inline function get_EcsUnknownEvent():Int return flecs_wrapper.impl.FlecsWrapperImpl.EcsUnknownEvent;
 
-  // Component management
-  @:native("flecs_component_get_id_by_name")
-  extern public static function componentId(name:String):ComponentId;
+  public static var EcsOnAdd(get, never):Int;
+  static inline function get_EcsOnAdd():Int return flecs_wrapper.impl.FlecsWrapperImpl.EcsOnAdd;
 
-  @:native("flecs_component_is_tag")
-  extern public static function componentIsTag(componentId:ComponentId):Bool;
+  public static var EcsOnRemove(get, never):Int;
+  static inline function get_EcsOnRemove():Int return flecs_wrapper.impl.FlecsWrapperImpl.EcsOnRemove;
 
-  @:native("flecs_component_print_registry")
-  extern public static function componentPrintRegistry():Void;
+  public static var EcsOnSet(get, never):Int;
+  static inline function get_EcsOnSet():Int return flecs_wrapper.impl.FlecsWrapperImpl.EcsOnSet;
 
-  @:native("flecs_component_create")
-  extern public static function componentCreate(name:String, size:UInt32):ComponentId;
+  public static var EcsOnDelete(get, never):Int;
+  static inline function get_EcsOnDelete():Int return flecs_wrapper.impl.FlecsWrapperImpl.EcsOnDelete;
 
-  @:native("flecs_component_create_tag")
-  extern public static function componentCreateTag(name:String):ComponentId;
+  public static var EcsOnDeleteTarget(get, never):Int;
+  static inline function get_EcsOnDeleteTarget():Int return flecs_wrapper.impl.FlecsWrapperImpl.EcsOnDeleteTarget;
 
-  // Entity inspection
-  @:native("flecs_entity_print_components")
-  extern public static function entityPrintComponents(entityId:EntityId):Void;
+  public static var EcsOnTableCreate(get, never):Int;
+  static inline function get_EcsOnTableCreate():Int return flecs_wrapper.impl.FlecsWrapperImpl.EcsOnTableCreate;
 
-  @:native("flecs_entity_has_component")
-  extern public static function entityHasComponent(entityId:EntityId, componentId:ComponentId):Bool;
+  public static var EcsOnTableDelete(get, never):Int;
+  static inline function get_EcsOnTableDelete():Int return flecs_wrapper.impl.FlecsWrapperImpl.EcsOnTableDelete;
 
-  @:native("flecs_entity_has_component_by_name")
-  extern public static function entityHasComponentByName(entityId:EntityId, name:String):Bool;
+  public static function componentId(name:String):ComponentId {
+    return flecs_wrapper.impl.FlecsWrapperImpl.componentId(name);
+  }
 
-  // Entity modification
-  @:native("flecs_entity_add_component")
-  extern public static function entityAddComponent(entityId:EntityId, componentId:ComponentId):Bool;
+  public static function componentIsTag(componentId:ComponentId):Bool {
+    return flecs_wrapper.impl.FlecsWrapperImpl.componentIsTag(componentId);
+  }
 
-  @:native("flecs_entity_add_component_by_name")
-  extern public static function entityAddComponentByName(entityId:EntityId, name:String):Bool;
+  public static function componentPrintRegistry():Void {
+    flecs_wrapper.impl.FlecsWrapperImpl.componentPrintRegistry();
+  }
 
-  @:native("flecs_entity_remove_component")
-  extern public static function entityRemoveComponent(entityId:EntityId, componentId:ComponentId):Bool;
+  public static function componentCreate(name:String, size:Int):ComponentId {
+    return flecs_wrapper.impl.FlecsWrapperImpl.componentCreate(name, size);
+  }
 
-  @:native("flecs_entity_remove_component_by_name")
-  extern public static function entityRemoveComponentByName(entityId:EntityId, name:String):Bool;
+  public static function componentCreateTag(name:String):ComponentId {
+    return flecs_wrapper.impl.FlecsWrapperImpl.componentCreateTag(name);
+  }
 
-  @:native("flecs_entity_set_component")
-  extern public static function entitySetComponent(entityId:EntityId, componentId:ComponentId, componentPtr:Pointer<cpp.Void>):Bool;
+  public static function entityPrintComponents(entityId:EntityId):Void {
+    flecs_wrapper.impl.FlecsWrapperImpl.entityPrintComponents(entityId);
+  }
 
-  @:native("flecs_entity_get_component")
-  extern public static function entityGetComponent(entityId:EntityId, componentId:ComponentId):Pointer<cpp.Void>;
+  public static function entityHasComponent(entityId:EntityId, componentId:ComponentId):Bool {
+    return flecs_wrapper.impl.FlecsWrapperImpl.entityHasComponent(entityId, componentId);
+  }
 
-  @:native("flecs_entity_mark_component")
-  extern public static function entityMarkComponent(entityId:EntityId, componentId:ComponentId):Void;
+  public static function entityHasComponentByName(entityId:EntityId, name:String):Bool {
+    return flecs_wrapper.impl.FlecsWrapperImpl.entityHasComponentByName(entityId, name);
+  }
 
-  // Pair management
-  @:native("flecs_pair_register")
-  extern public static function pairRegister(relationComponentId:ComponentId, objectEntityId:EntityId):PairId;
+  public static function entityAddComponent(entityId:EntityId, componentId:ComponentId):Bool {
+    return flecs_wrapper.impl.FlecsWrapperImpl.entityAddComponent(entityId, componentId);
+  }
 
-  @:native("flecs_pair_register_entity")
-  extern public static function pairRegisterEntity(relationEntityId:EntityId, objectEntityId:EntityId):PairId;
+  public static function entityAddComponentByName(entityId:EntityId, name:String):Bool {
+    return flecs_wrapper.impl.FlecsWrapperImpl.entityAddComponentByName(entityId, name);
+  }
 
-  @:native("flecs_pair_register_by_name")
-  extern public static function pairRegisterByName(relationName:String, objectName:String):PairId;
+  public static function entityRemoveComponent(entityId:EntityId, componentId:ComponentId):Bool {
+    return flecs_wrapper.impl.FlecsWrapperImpl.entityRemoveComponent(entityId, componentId);
+  }
 
-  @:native("flecs_pair_unregister")
-  extern public static function pairUnregister(pairId:PairId):Bool;
+  public static function entityRemoveComponentByName(entityId:EntityId, name:String):Bool {
+    return flecs_wrapper.impl.FlecsWrapperImpl.entityRemoveComponentByName(entityId, name);
+  }
 
-  @:native("flecs_entity_add_pair")
-  extern public static function entityAddPair(entityId:EntityId, pairId:PairId):Bool;
+  public static function entitySetComponent(entityId:EntityId, componentId:ComponentId, componentPtr:NativePtr<Dynamic>):Bool {
+    return flecs_wrapper.impl.FlecsWrapperImpl.entitySetComponent(entityId, componentId, componentPtr);
+  }
 
-  @:native("flecs_entity_remove_pair")
-  extern public static function entityRemovePair(entityId:EntityId, pairId:PairId):Bool;
+  public static function entityGetComponent(entityId:EntityId, componentId:ComponentId):NativePtr<Dynamic> {
+    return flecs_wrapper.impl.FlecsWrapperImpl.entityGetComponent(entityId, componentId);
+  }
 
-  @:native("flecs_entity_has_pair")
-  extern public static function entityHasPair(entityId:EntityId, pairId:PairId):Bool;
+  public static function entityMarkComponent(entityId:EntityId, componentId:ComponentId):Void {
+    flecs_wrapper.impl.FlecsWrapperImpl.entityMarkComponent(entityId, componentId);
+  }
 
-  @:native("flecs_entity_set_pair")
-  extern public static function entitySetPair(entityId:EntityId, pairId:PairId, pairPtr:Pointer<cpp.Void>):Bool;
+  public static function pairRegister(relationComponentId:ComponentId, objectEntityId:EntityId):PairId {
+    return flecs_wrapper.impl.FlecsWrapperImpl.pairRegister(relationComponentId, objectEntityId);
+  }
 
-  @:native("flecs_entity_get_pair")
-  extern public static function entityGetPair(entityId:EntityId, pairId:PairId):Pointer<cpp.Void>;
+  public static function pairRegisterEntity(relationEntityId:EntityId, objectEntityId:EntityId):PairId {
+    return flecs_wrapper.impl.FlecsWrapperImpl.pairRegisterEntity(relationEntityId, objectEntityId);
+  }
 
-  // Entity lifecycle
-  @:native("flecs_entity_create")
-  extern public static function entityCreate(name:String):EntityId;
+  public static function pairRegisterByName(relationName:String, objectName:String):PairId {
+    return flecs_wrapper.impl.FlecsWrapperImpl.pairRegisterByName(relationName, objectName);
+  }
 
-  @:native("flecs_entity_destroy")
-  extern public static function entityDestroy(entityId:EntityId):Bool;
+  public static function pairUnregister(pairId:PairId):Bool {
+    return flecs_wrapper.impl.FlecsWrapperImpl.pairUnregister(pairId);
+  }
 
-  // Observer registration
-  @:native("flecs_register_observer")
-  extern public static function registerObserver(
-    componentIds:RawPointer<ComponentId>,
-    numComponents:UInt32,
-    eventIds:RawPointer<EventId>,
-    numEvents:UInt32,
-    callback:ObserverCallbackNative,
-    callbackId:UInt32
-  ):ObserverId;
+  public static function entityAddPair(entityId:EntityId, pairId:PairId):Bool {
+    return flecs_wrapper.impl.FlecsWrapperImpl.entityAddPair(entityId, pairId);
+  }
 
-  @:native("flecs_register_observer_ex")
-  extern public static function registerObserverEx(
-    includeComponentIds:RawPointer<ComponentId>,
-    numIncludeComponents:UInt32,
-    excludeComponentIds:RawPointer<ComponentId>,
-    numExcludeComponents:UInt32,
-    eventIds:RawPointer<EventId>,
-    numEvents:UInt32,
-    callback:ObserverCallbackNative,
-    callbackId:UInt32
-  ):ObserverId;
+  public static function entityRemovePair(entityId:EntityId, pairId:PairId):Bool {
+    return flecs_wrapper.impl.FlecsWrapperImpl.entityRemovePair(entityId, pairId);
+  }
 
-  @:native("flecs_unregister_observer")
-  extern public static function unregisterObserver(observerId:ObserverId):Bool;
+  public static function entityHasPair(entityId:EntityId, pairId:PairId):Bool {
+    return flecs_wrapper.impl.FlecsWrapperImpl.entityHasPair(entityId, pairId);
+  }
 
-  // System registration
-  @:native("flecs_register_system")
-  extern public static function registerSystem(
-    name:String,
-    componentIds:RawPointer<ComponentId>,
-    numComponents:UInt32,
-    callback:SystemCallbackNative,
-    callbackId:UInt32
-  ):SystemId;
+  public static function entitySetPair(entityId:EntityId, pairId:PairId, pairPtr:NativePtr<Dynamic>):Bool {
+    return flecs_wrapper.impl.FlecsWrapperImpl.entitySetPair(entityId, pairId, pairPtr);
+  }
 
-  @:native("flecs_register_system_ex")
-  extern public static function registerSystemEx(
-    name:String,
-    includeComponentIds:RawPointer<ComponentId>,
-    numIncludeComponents:UInt32,
-    excludeComponentIds:RawPointer<ComponentId>,
-    numExcludeComponents:UInt32,
-    callback:SystemCallbackNative,
-    callbackId:UInt32
-  ):SystemId;
+  public static function entityGetPair(entityId:EntityId, pairId:PairId):NativePtr<Dynamic> {
+    return flecs_wrapper.impl.FlecsWrapperImpl.entityGetPair(entityId, pairId);
+  }
 
-  @:native("flecs_unregister_system")
-  extern public static function unregisterSystem(systemId:SystemId):Bool;
+  public static function entityCreate(name:String):EntityId {
+    return flecs_wrapper.impl.FlecsWrapperImpl.entityCreate(name);
+  }
 
-  // Lifecycle
-  @:native("flecs_init")
-  extern public static function init():Void;
+  public static function entityDestroy(entityId:EntityId):Bool {
+    return flecs_wrapper.impl.FlecsWrapperImpl.entityDestroy(entityId);
+  }
 
-  @:native("flecs_progress")
-  extern public static function progress(delta:Float32):Void;
+  public static function init():Void {
+    flecs_wrapper.impl.FlecsWrapperImpl.init();
+  }
 
-  @:native("flecs_fini")
-  extern public static function fini():Void;
+  public static function progress(delta:Float):Void {
+    flecs_wrapper.impl.FlecsWrapperImpl.progress(delta);
+  }
 
-  @:native("flecs_set_threads")
-  extern public static function setThreads(threads:Int):Void;
+  public static function fini():Void {
+    flecs_wrapper.impl.FlecsWrapperImpl.fini();
+  }
 
-  // Version
-  @:native("flecs_version")
-  extern public static function flecs_version():ConstCharStar;
+  public static function setThreads(threads:Int):Void {
+    flecs_wrapper.impl.FlecsWrapperImpl.setThreads(threads);
+  }
 
   public static function version():String {
-    return cast flecs_version();
+    return flecs_wrapper.impl.FlecsWrapperImpl.version();
   }
 }
 
-
-// Known components (from flecs_wrapper_components.h)
 @:structAccess
 @:structInit
 @:nativeGen
 @:keep
 @:native("EntityId")
 class EntityIdComponent {
-  public var value:UInt32;
+  public var value:Int;
 }
-
-
-// NOTE: These are currently disabled because we removed them from flecs_wrapper_components.h to avoid collisions with user-defined components
-// User has to define them themselves.
-/*
-@:structAccess
-@:structInit
-@:nativeGen
-@:native("Position")
-class Position {
-  public var x:Float32;
-  public var y:Float32;
-  public var z:Float32;
-
-  public function new(x:Float32 = 0, y:Float32 = 0, z:Float32 = 0) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
-  }
-}
-
-@:structAccess
-@:structInit
-@:nativeGen
-@:native("Velocity")
-class Velocity {
-  public var x:Float32;
-  public var y:Float32;
-  public var z:Float32;
-
-  public function new(x:Float32 = 0, y:Float32 = 0, z:Float32 = 0) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
-  }
-}
-
-@:structAccess
-@:structInit
-@:nativeGen
-@:keep
-@:native("Destination")
-class Destination {
-  public var x:Float32;
-  public var y:Float32;
-  public var z:Float32;
-  public var speed:Float32;
-
-  public function new(x:Float32 = 0, y:Float32 = 0, z:Float32 = 0, speed:Float32 = 0) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
-    this.speed = speed;
-  }
-}
-*/
