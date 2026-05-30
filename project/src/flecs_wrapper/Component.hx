@@ -51,9 +51,10 @@ class Component {
     }
 
     var structCt = Context.toComplexType(Context.getType(typePath));
+    var size = flecs_wrapper.ComponentMacro.computeComponentSize(classType);
 
     return macro new flecs_wrapper.ComponentRef<$structCt>(
-      flecs_wrapper.Component.create($v{nativeName}, cpp.Native.sizeof($typeExpr))
+      flecs_wrapper.Component.create($v{nativeName}, $v{size})
     );
   }
 
@@ -83,10 +84,10 @@ class Component {
   }
 
   public static function create(name:String, size:Int):Component {
+    var existingId = FlecsWrapper.componentId(name);
+    if (existingId != 0) return new Component(name, existingId, size);
     var id = FlecsWrapper.componentCreate(name, cast size);
-    if (id == 0) {
-      throw 'componentCreate failed for ${name}';
-    }
+    if (id == 0) throw 'componentCreate failed for ${name}';
     return new Component(name, id, cast size);
   }
 

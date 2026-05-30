@@ -4,6 +4,32 @@ package flecs_wrapper;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.Type;
+
+function computeComponentSize(classType:ClassType):Int {
+  var size = 0;
+  for (field in classType.fields.get()) {
+    if (field.isPublic) {
+      switch field.kind {
+        case FVar(_, _):
+          size += switch Context.follow(field.type) {
+            case TAbstract(_.get() => a, _):
+              switch a.pack.concat([a.name]).join(".") {
+                case "Float":       8;
+                case "Int":         4;
+                case "Bool":        1;
+                case "cpp.Float32": 4;
+                case "cpp.UInt32":  4;
+                case "cpp.Int32":   4;
+                default: Context.error('Unsupported @:component field type: ${a.name}', field.pos); 0;
+              }
+            default: Context.error('Unsupported @:component field type', field.pos); 0;
+          };
+        default:
+      }
+    }
+  }
+  return size;
+}
 #end
 
 class ComponentMacro {
@@ -41,8 +67,9 @@ class ComponentMacro {
 			Context.error('Component.ofType() requires a class annotated with @:component (got: ${typePath})', Context.currentPos());
 		}
 		var structCt = Context.toComplexType(Context.getType(typePath));
+		var size = computeComponentSize(classType);
 		return macro new flecs_wrapper.ComponentRef<$structCt>(
-			flecs_wrapper.Component.create($v{nativeName}, cpp.Native.sizeof($typeExpr))
+			flecs_wrapper.Component.create($v{nativeName}, $v{size})
 		);
 	}
 

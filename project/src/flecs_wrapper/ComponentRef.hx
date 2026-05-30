@@ -6,7 +6,6 @@ package flecs_wrapper;
  * Values come from `Component.of(SomeComponentClass)`; they coerce to `Component`
  * anywhere the underlying Flecs API expects it (`@:to Component`).
  */
-@:generic
 @:forward(name, id, size)
 abstract ComponentRef<T>(Component) to Component {
   public inline function new(component:Component) {
