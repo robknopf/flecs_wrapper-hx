@@ -138,7 +138,8 @@ class ObserverImpl {
     return FlecsWrapperImpl.unregisterObserver(id);
   }
 
-  private static function dispatchObserver(
+  // Only called from the injected C++ trampoline, which DCE can't see.
+  @:keep private static function dispatchObserver(
     entityIds:Array<Int>,
     rawColumns:Array<Dynamic>,
     columnComponentIds:Array<Int>,

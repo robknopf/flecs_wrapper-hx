@@ -133,7 +133,8 @@ class SystemImpl {
     return FlecsWrapperImpl.unregisterSystem(id);
   }
 
-  private static function dispatchSystem(
+  // Only called from the injected C++ trampoline, which DCE can't see.
+  @:keep private static function dispatchSystem(
     entityIds:Array<Int>,
     rawColumns:Array<Dynamic>,
     columnComponentIds:Array<Int>,
@@ -287,5 +288,6 @@ class SystemImpl {
       pc.add(i).ref = cv;
     }
   }
+
 }
 #end
