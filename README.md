@@ -1,6 +1,6 @@
 # flecs_wrapper-hx
 
-Haxe haxelib for [flecs_wrapper](https://github.com/robknopf/flecs_wrapper.git), a wrapper library for the excellent flecs ecs library (https://github.com/SanderMertens/flecs.git).  Note that flecs_wrapper is not a 1:1 wrapper over flecs, but instead provides abstracted handles, callbacks and other assorted helpers for my gamedev. 
+Haxe haxelib for [flecs_wrapper-c](https://github.com/whirlinggizmo/flecs_wrapper-c), a wrapper library for the excellent flecs ecs library (https://github.com/SanderMertens/flecs.git).  Note that flecs_wrapper is not a 1:1 wrapper over flecs, but instead provides abstracted handles, callbacks and other assorted helpers for my gamedev. 
 
 This haxelib vendors the flecs_wrapper repo as a submodule, exposes its Haxe bindings on the classpath, and compiles native code through hxcpp when you build your project.  As such, it is important that you include "--recursive" when pulling/cloning.
 
